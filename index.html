@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>TweetTracker</title>
+  <link rel="stylesheet" type="text/css" href="stylesLogin.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+  <body>
+    <div class="titolo">
+      <h1>TweetTracker</h1>
+    </div>
+  <div class="wrapper fadeInDown">
+    <label for="username password twitter">Inserisci Access token & secret del tuo account twitter</label>
+    <div id="formContent">
+      <form id="loginform">
+        <input type="text" id="login2" class="fadeIn second" name="login2" placeholder="API key">
+        <input type="text" id="password2" class="fadeIn second" name="password2" placeholder="API Secret">
+        <input type="text" id="login" class="fadeIn third" name="login" placeholder="Access token">
+        <input type="text" id="password" class="fadeIn third" name="password" placeholder="Access Secret">
+        <input type="submit" class="fadeIn fourth" value="Log In">
+      </form>
+      <form id="loginform2">
+      <input type="submit" class="fadeIn fourth" value="Continua senza login"/>
+    </form>
+    </div>
+  </div>
+  <script type="text/javascript">
+  $("#loginform").submit(function(e) {
+    e.preventDefault();
+    var x = $("#loginform").serialize();
+    $.ajax({
+      type: "post",
+      url: "/login",
+      data: x,
+      success: function(result) {
+        if(result == "ok"){
+          window.location.href = "ricerca.html";
+        } else {
+          alert(result);
+        }
+
+      }
+    });
+
+  });
+  $("#loginform2").submit(function(e){
+    e.preventDefault();
+    $.ajax({
+      type: "get",
+      url: "/login2",
+      success: function(result) {
+        window.location.href = "ricerca.html";
+      }
+    });
+  });
+
+  </script>
+</body>
+</html>

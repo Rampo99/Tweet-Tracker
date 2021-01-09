@@ -1,0 +1,157 @@
+html {
+  background-color: #FFEBCD;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background-image:linear-gradient(to bottom, white, #FFEBCD);
+}
+
+.primaParte, .secondaParteAccount {
+  padding: 1% 2%;
+}
+
+.primaParte {
+  display: grid;
+  grid-template-areas: "nav"
+                       "titolo";
+}
+
+.navbar {
+  grid-area: nav;
+}
+
+summary {
+  background-color: white;
+  border: 1px solid black;
+}
+
+.navbar-nav>.active>a{
+  background-color: #00BFFF;
+}
+.titolo {
+  grid-area: titolo;
+  text-align: center;
+}
+
+.secondaParteAccount {
+  display: grid;
+  grid-template-areas: "form tweets";
+  grid-template-columns: 50% 50%;
+}
+
+textarea {
+  width:90%;
+  font-size: 14px;
+  height:7vw;
+}
+
+.tweetdapubblicare, .tweetSalvati{
+margin-right: 2%;
+padding: 10px;
+border-radius: 4%;
+}
+
+.tweetdapubblicare {
+  grid-area:form;
+}
+
+.tweetSalvati{
+  grid-area: tweets;
+}
+
+.tweetSalvati label, .tweetSalvati .btndiv {
+  text-align: center;
+}
+
+label[for="pubblica titolo"], label[for="Tweet Salvati"]{
+margin-bottom: 3px;
+font-weight: 600;
+font-size: 18px;
+color: #404040;
+width:100%;
+}
+
+h1 {
+  color:black;
+  text-shadow: 3px 3px 5px skyblue;
+  font-weight: 700;
+  font-size: 60px;
+}
+
+#wc img {
+  width:300px;
+  height:300px;
+}
+
+.tweets {
+  width:100%;
+  grid-area: tweets;
+  border: 1px solid black;
+}
+
+.titolo_tabella {
+  font-size: 24px;
+  text-align: center;
+  background-color: #B0E0E6;
+}
+
+.tweets tr:nth-child(2n+1):not(.titolo_tabella){
+  background-color: #E6E6FA;
+}
+
+.tweets tr:nth-child(even), .trendsTable tr:nth-child(even) {
+  background-color: white;
+}
+
+.tweets td, .tweets th {
+  padding: 7px;
+}
+
+.tweets tr {
+  border-left: 1px solid black;
+  border-bottom: 1px solid black;
+}
+
+.dettaglitweet{
+  margin-top:1%;
+}
+
+.dettaglitweet:not(summary) {
+  width: 100%;
+  font: 16px "Open Sans", Calibri, sans-serif;
+}
+
+.dettaglitweet > summary {
+  font-size: 1vw;
+  float:right;
+  width: 50px;
+  background-color: #ddd;
+  border: none;
+  box-shadow: 3px 3px 4px black;
+  cursor: pointer;
+}
+
+.dettaglitweet > div {
+  border-radius: 0 0 10px 10px;
+  background-color: #ddd;
+  padding: 2px 6px;
+  margin: 0;
+  box-shadow: 3px 3px 4px black;
+}
+.divtweets{
+max-height: 800px;
+overflow-y: scroll;
+}
+input[type="text"] {
+  width:50px;
+}
+
+.immagini img{
+  width:50%;
+}
+
+.charts{
+  float: right;
+  margin-top:2%;
+}

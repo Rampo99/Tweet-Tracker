@@ -1,0 +1,23 @@
+{
+  "name": "progetto",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.20.0",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "image-downloader": "^4.0.1",
+    "node-fetch": "^2.6.1",
+    "ol": "^6.4.3",
+    "twitter": "^1.7.1"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4"
+  }
+}

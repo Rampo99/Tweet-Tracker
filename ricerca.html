@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>TweetTracker</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="stylesRicerca.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.4.3/css/ol.css" type="text/css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.4.3/build/ol.js"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+  <section>
+    <div class="primaParte">
+      <div class="titolo">
+        <h1>TweetTracker</h1>
+      </div>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">TRACKER</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item active">
+              <a class="nav-link" href="/ricerca">Ricerca</a>
+            </li>
+            <li class="nav-item" style="display: none">
+              <a class="nav-link" href="/account">Account</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+    <div class="secondaParte">
+      <div class="divform1">
+        <div class="dettagliEcronologia">
+        <details> <summary>DETTAGLI</summary>Cerca i tweets compilando il form.
+        La ricerca verrà effettuata in base alle tue scelte.</details>
+        <div class="divchron">
+        <table class="chron_table"></table>
+      </div>
+      </div>
+    <form class="form1">
+        <label class="hashtagluogo" for="HashtagOLuogo">Cerca in base a:</label>
+          <section class="radio_scelta1">
+          <input type="radio" name="selector1" id="testo" value="testo" checked><label for="testo">Testo</label>
+          <input type="radio" name="selector1" id="hashtag" value="hashtag"><label for="hashtag">Hashtag</label>
+          <input type="radio" name="selector1" id="luogo" value="luogo"><label for="luogo">Luogo</label>
+          <input type="radio" name="selector1" id="utente" value="utente"><label for="utente">Utente</label>
+        </section>
+        <label class="recentipopolari" for="recentipopolari">Mostra i tweets più:</label>
+        <section class="radio_scelta2">
+          <input type="radio" name="selector2" id="popolari" value="popular" checked><label for="popolari">Popolari</label>
+          <input type="radio" name="selector2" id="recenti" value="recent"><label for="recenti">Recenti</label>
+        </section>
+          <input id="inputTesto" type="text" name="testoRicerca" value="" placeholder="Inserisci la parola chiave...">
+          <input type="submit" value="Cerca">
+        </form>
+      </div>
+      <div class="divform2">
+        <details class="dettagli"> <summary>DETTAGLI</summary>Cerca i trend del momento in Italia. Tutte le parole o gli hashtag più frequenti su twitter.</details>
+        <form class="form2">
+        <div><input type="submit" value="Tweet Trends"></div>
+        </form>
+      </div>
+      <div class="divform3">
+        <details class="dettagli"> <summary>DETTAGLI</summary>Cerca i tweets secondo la tua posizione, scegliendo un raggio che va da 1 a 1000 KM.</details>
+        <form class="form3">
+          <label class="raggioLabel">Raggio di ricerca</label>
+          <input id="rangeraggio" type="range" name="raggio" min="1" max="1000" value="1" oninput="boxraggio.value=rangeraggio.value">
+          <p class="p_range">
+            <span class="uno">1</span>
+            <input id="boxraggio" type="text" name="raggio" value="1" oninput="rangeraggio.value=boxraggio.value"><span class="km"> KM</span>
+            <span class="mille">1000</span></p>
+
+            <label class="recentipopolari" for="recentipopolari">Mostra i tweets più:</label>
+            <section class="radio_scelta2">
+              <input type="radio" name="selector3" id="popolari2" value="popular" checked><label for="popolari2">Popolari</label>
+              <input type="radio" name="selector3" id="recenti2" value="recent"><label for="recenti2">Recenti</label>
+            </section>
+          <div>
+         <input type="submit" value="Tweet vicino a te">
+        </div>
+        </form>
+        </div>
+      </div>
+      <div class="grafico1">
+        <div id="mapdiv" style="display:none"><label for='mappa geolocalizzati'>Mappa dei tweet geolocalizzati</label><div id="map"><div id='popup'></div></div></div>
+        <div id="imagediv" style="display:none"></div>
+      </div>
+      <div class="grafico2">
+        <div id="graph"></div>
+        <div class="divtrends" style="display:none">
+        <table class="trendsTable"></table>
+      </div>
+      </div>
+        <div class="tables">
+          <div class="divtweets" style="display:none">
+            <div>
+          <table class="tweets"></table>
+        </div>
+          <input class='salva_sel' type='submit' value='Salva tweet selezionati' name='selTweet' onclick="salva_sel()" style="display: none">
+          <input class='salva_tutti' type='submit' value='Salva tutti i tweet' name='tuttiTweet' onclick="salva_tutti()" style="display: none">
+        </div>
+    </div>
+  </section>
+  <script type="text/javascript">
+    var logged;
+    $.ajax({
+      type: "get",
+      url: "/navcheck",
+      success: function(result) {
+        if(result == ""){
+          logged = false;
+        } else {
+          logged = true;
+          $(".nav-item").show();
+          $(".nav-link").eq(1).html(result);
+          $(".salva_tutti").show();
+          $(".salva_sel").show();
+        }
+      }
+    });
+    google.charts.load("current", {packages:['corechart']});
+    var dataObject;
+    var images = [];
+    var chart = [];
+    var coords = [];
+    var testo = [];
+    var words;
+    var searched;
+    $(".form1").submit(function(e) {
+      e.preventDefault();
+      var text = $('#inputTesto').val();
+      var type1 = $('input[name="selector1"]:checked').val();
+      var type2 = $('input[name="selector2"]:checked').val();
+      searched = $(".form1").serialize();
+      cronologia(text, searched, type1, type2);
+      research(searched,0);
+    });
+
+    $(".form2").submit(function(e) {
+      e.preventDefault();
+
+      var send = "testoRicerca=1&selector1=0";
+      research(send, 1);
+    });
+
+    $(".form3").submit(function(e) {
+      e.preventDefault();
+      var raggio = $("#boxraggio").val();
+      if(raggio >= 1 && raggio <= 1000) {
+        var sel3 = $('input[name="selector3"]:checked').val();
+      searched = "testoRicerca=0&selector1=coords&raggio=" + raggio +"&selector2=" + sel3;
+      research(searched, 0);
+    } else alert("Raggio inserito non valido! Inserire un valore che va da 1 a 1000 KM.");
+    });
+
+    function salva_sel(){
+      let indici = [];
+      let a = 0;
+      for(let i = 0; i < $(".tweets tr").length - 1; i++){
+        if($(".dasalvare")[i].checked){
+          indici[a] = i;
+          a++
+        }
+      }
+      salva(indici);
+    }
+
+    function salva_tutti(){
+      let indici = [];
+      for(let i = 0; i < $(".tweets tr").length -1; i++){
+        indici[i] = i;
+      }
+      salva(indici);
+    }
+
+    function createchart(){
+      var data = new google.visualization.arrayToDataTable(chart);
+      var chartt = new google.visualization.ColumnChart(document.getElementById('graph'));
+      chartt.draw(data);
+      $(".diagramma").show();
+    };
+
+
+
+    function wordcloud(){
+      if(words == ""){
+        alert("Non sono presenti hashtag in questi tweets!");
+      } else {
+        $("#imagediv").html("");
+        if(logged){
+          $("#imagediv").prepend('<label for:"Wordcloud">Wordcloud degli Hashtag</label><div><img id="wordcloud" src="https://quickchart.io/wordcloud?text='
+          + words + '"/> </div><input type="submit" id="uploadwc" name="salvawordcloud" value="Salva wordcloud" onclick="uploadwc()">')
+        } else {
+          $("#imagediv").prepend('<label for:"Wordcloud">Wordcloud degli Hashtag</label><div><img id="wordcloud" src="https://quickchart.io/wordcloud?text='
+          + words + '"/> </div>')
+        }
+
+        $("#imagediv").show();
+      }
+    };
+
+    function uploadwc(){
+      console.log("ok");
+      $.ajax({
+        type: "post",
+        url: "/wcsave",
+        data: {
+          a: words,
+          b: searched
+        },
+        success: function(result) {
+          alert("La tua wordcloud é stata salvata, potrai visualizzarla nella pagina Account!");
+        }
+      });
+    }
+
+    function salva(indici){
+
+      let savingtweets = {
+        statuses: []
+      };
+      for(let i =0; i < indici.length;i++){
+        savingtweets.statuses[i] = dataObject[indici[i]];
+      }
+      var jsstring = JSON.stringify(savingtweets);
+      $.ajax({
+        type: "post",
+        url: "/salva",
+        data: {
+          o: jsstring
+        },
+        success: function(result) {
+          console.log(result);
+          alert("S");
+        }
+      });
+
+    }
+
+    function showmap(){
+      $("#popup").html("");
+      $("#map").html("");
+      if(images.length != 0){
+        $("#mapdiv").show();
+        let count = 0;
+        let seen = [];
+
+        var vectorSource = new ol.source.Vector({});
+        for(let i = 0; i < images.length; i++){
+          if(seen.includes(coords[i])){
+          } else {
+            seen[count] = coords[i];
+            count++
+            var feature = new ol.Feature({
+                geometry: new ol.geom.Point(ol.proj.fromLonLat(coords[i])),
+                name: testo[i]
+              });
+            var style = new ol.style.Style({
+                image: new ol.style.Icon({
+                  src: images[i],
+                  scale: 0.03
+                }),
+              });
+          }
+          feature.setStyle(style);
+          vectorSource.addFeature(feature);
+        }
+        var vectorLayer = new ol.layer.Vector({
+          source: vectorSource
+        });
+        var map = new ol.Map({
+          target: document.getElementById('map'),
+          layers: [
+            new ol.layer.Tile({
+              source: new ol.source.OSM()
+            }), vectorLayer
+          ],
+          view: new ol.View({
+            center: ol.proj.fromLonLat(coords[0]),
+            zoom: 0
+          })
+        });
+        $("#map").prepend("<div id='popup'></div>");
+        var element = document.getElementById('popup');
+        var popup = new ol.Overlay({
+          element: element,
+        });
+        map.addOverlay(popup);
+        map.on('click', function (evt) {
+          var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
+            return feature;
+          });
+          if (feature) {
+            var coordinates = feature.getGeometry().getCoordinates();
+            popup.setPosition(coordinates);
+            $(element).popover({
+              placement: 'top',
+              html: true,
+              content: feature.get('name'),
+            });
+            $(element).popover('show');
+          } else {
+            $(element).popover('dispose');
+          }
+        });
+
+        map.on('pointermove', function (e) {
+          if (e.dragging) {
+            $(element).popover('dispose');
+            return;
+          }
+          var pixel = map.getEventPixel(e.originalEvent);
+          var hit = map.hasFeatureAtPixel(pixel);
+          map.getTarget().style.cursor = hit ? 'pointer' : '';
+        });
+      } else {
+        alert("Non sono presenti tweet geolocalizzati");
+        }
+    };
+
+    function cronologia(text, send, type1, type2) {
+      var isVisible = false;
+      var tbl = $(".chron_table");
+      var rows = $(".chron_table tr").length;
+      var i = 0;
+      while (i < rows && isVisible == false) {
+        if ($(".chron_table tr:eq(" + i + ") td:eq(" + 0 + ")").text() == text) {
+          if ($(".chron_table tr:eq(" + i + ") td:eq(" + 1 + ")").text() == type1) {
+            if ($(".chron_table tr:eq(" + i + ") td:eq(" + 2 + ")").text() == type2) isVisible = true;
+          }
+        }
+        i = i + 1;
+      }
+      if (rows == 0) tbl.append('<tr class = "chron_title"><th>Parole cercate</th><th>Ricerca</th><th>Tipologia</th>');
+      if (isVisible === false) $('<tr onclick = "research(\'' + send + '\', 0)"><td>' + text + '</td><td>' + type1 + '</td><td>' + type2 + '</td></tr>').insertAfter('.chron_title');
+    }
+
+
+    function research(x, type) { //type può essere 0 o 1, serve a distinguere il form con 'tweet trend' dagli altri, avendo due JSON differenti. 1 indica tweet trend, 0 l'altro;
+      $.ajax({
+        type: "post",
+        url: "/",
+        data: x,
+        success: function(result) {
+          if (type == 0) {
+            $(".divtrends").hide();
+            $(".grafico2").hide();
+            var table = $(".tweets").empty();
+            var noTweet = $(".zeroTweet").empty();
+            if (result.statuses.length != 0) {
+              dataObject = result.statuses;
+              $(".tweets").append("<tr class='titolo_tabella'><th></th><th> Twitter News</th></tr>");
+              let conta = 0;
+              images = [];
+              coords = [];
+              testo = [];
+              words = "";
+              for (var i = 0; i < dataObject.length; i++) {
+                if(logged){
+                  $(".tweets").append("<tr><td class='checkbox_tweets'><input class='dasalvare' type='checkbox'/>" +
+                   "</td><td><span style='color:#2F4F4F; font-weight: bold;'> #"  + i + ": </span>" + JSON.stringify(dataObject[i].text) +
+                   "<details class='dettaglitweet'><summary>INFO</summary><div><ul><li>Utente: " + JSON.stringify(dataObject[i].user.screen_name).slice(1,-1) +
+                   "</li><li>Data tweet: "+ JSON.stringify(dataObject[i].created_at).slice(1,-1).replace("+0000", "") +"<li>Numero REtweet: "
+                   + JSON.stringify(dataObject[i].retweet_count)+"</li><li>Lingua: " + JSON.stringify(dataObject[i].lang).slice(1,-1)+"</ul></div></details></td></tr>");
+                } else {
+                  $(".tweets").append("<tr><td class='checkbox_tweets'>" +
+                   "</td><td><span style='color:#2F4F4F; font-weight: bold;'> #"  + i + ": </span>" + JSON.stringify(dataObject[i].text) +
+                   "<details class='dettaglitweet'><summary>INFO</summary><div><ul><li>Utente: " + JSON.stringify(dataObject[i].user.screen_name).slice(1,-1) +
+                   "</li><li>Data tweet: "+ JSON.stringify(dataObject[i].created_at).slice(1,-1).replace("+0000", "") +"<li>Numero REtweet: "
+                   + JSON.stringify(dataObject[i].retweet_count)+"</li><li>Lingua: " + JSON.stringify(dataObject[i].lang).slice(1,-1)+"</ul></div></details></td></tr>");
+                }
+
+                 if(dataObject[i].coordinates){
+                   coords[conta] = dataObject[i].coordinates.coordinates;
+                   testo[conta] = JSON.stringify(dataObject[i].text);
+                    if (dataObject[i].hasOwnProperty("extended_entities")){
+                      images[conta] = dataObject[i].extended_entities.media[0].media_url;
+                    } else {
+                      images[conta] = "marker.png";
+                    }
+                   conta++;
+                 } else {
+                   if(dataObject[i].place){
+                     testo[conta] = JSON.stringify(dataObject[i].text);
+                     coords[conta] = dataObject[i].place.bounding_box.coordinates[0][0];
+                     if (dataObject[i].hasOwnProperty("extended_entities")){
+                       images[conta] = dataObject[i].extended_entities.media[0].media_url;
+                     } else {
+                       images[conta] = "marker.png";
+                     }
+                     conta++
+                   }
+                 }
+                 if (dataObject[i].hasOwnProperty("extended_entities")) {
+                   $(".divtweets").find("tr").last().attr("style", "color:red");
+                   $("<div class='immagini'></div>").insertAfter("ul").last();
+                   for (let j = 0; j < dataObject[i].extended_entities.media.length; j++) {
+                     $(".immagini").last().append("<img src="+ JSON.stringify(dataObject[i].extended_entities.media[j].media_url)+ "/>");
+                   }
+                 }
+                  for (let j = 0; j < dataObject[i].entities.hashtags.length; j++) {
+                      words = words + " " + dataObject[i].entities.hashtags[j].text;
+                  }
+                }
+              $(".divtweets").show();
+              $(".grafico1").show();
+              wordcloud();
+              showmap();
+            } else {
+              $(".divtweets").hide();
+              alert("Purtroppo non sono stati trovati tweets con le opzioni scelte e con la parola inserita.");
+            }
+          } else if (type == 1) {
+            $(".divtweets").hide();
+            $(".grafico1").hide();
+            $(".grafico2").show();
+            $(".trendsTable").empty();
+            $(".trendsTable").append("<tr class='trendsTitle'><th style='text-align: center'>TRENDS</th></tr>");
+            var trend = [];
+            chart[0] = ["Nome","Quantitá"];
+            let conta2 = 1;
+            for (var i = 1; i < result[0].trends.length + 1; i++) {
+              trend[i - 1] = JSON.stringify(result[0].trends[i - 1].name).slice(1, -1); //ogni trend che mi verrà tornato sarà con le virgolette, quindi: "parola_trend". Devo rimuovere le virgolette, quindi primo e ultimo carattere della stringa.
+              if(result[0].trends[i-1].tweet_volume){
+                chart[conta2] = [trend[i-1],parseInt(JSON.stringify(result[0].trends[i-1].tweet_volume))];
+                conta2++;
+              }
+              $(".trendsTable").append('<tr><td onclick = "research(\'selector1=testo&testoRicerca=' + trend[i - 1 ] + '\', 0)">' + i + ". <span>" + trend[i - 1] + "</span></td></tr>");
+            }
+            $(".divtrends").show();
+            createchart();
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
